@@ -8,30 +8,29 @@ import matplotlib.pyplot as plt
 
 if __name__ == '__main__':
 
-    BASE_DIR = '/Users/mackenzie/Desktop/Bulge Test/Experiments/20250105_C9-0pT_NoMetal_3mmDia'
+    BASE_DIR = '/Users/mackenzie/Desktop/Bulge Test/Experiments/20250104_C7-20pT_4mmDia'
     READ_DIR = join(BASE_DIR, 'analyses')
     SAVE_DIR = READ_DIR
     FIGS_DIR = join(READ_DIR, 'figs')
 
-    SAVE_PLOTS = True
+    ONLY_PIDS = None  # None = all pids, otherwise should be a subset of those in combined_coords.xlsx
     PLOT_PER_PID = False
-    SAVE_DF = True
-
-    ONLY_PIDS = [5]  # should be the same pid as 'best-pids', which was used to generate combined_dz.xlsx
 
     DICT_DT_OVERLAYS = {
-        1: 12.25,
-        2: 12.575,
-        3: 12.35,
-        4: 13.6,
+        1: 11.4,
+        2: 10.05,
+        3: 14.8,
+        4: 9.675,
+        5: 11.6,
+        6: 9.9,
     }
 
     # ---
     read_dir = READ_DIR
     save_dir = SAVE_DIR
     figs_dir = FIGS_DIR
-    save_plots = SAVE_PLOTS
-    save_df = SAVE_DF
+    save_plots = True  # should always just be True
+    save_df = True  # should always just be True
     only_pids = ONLY_PIDS
     dict_dt_overlays = DICT_DT_OVERLAYS
     plot_per_pid = PLOT_PER_PID
@@ -45,7 +44,8 @@ if __name__ == '__main__':
     dfp = pd.read_excel(join(read_dir, 'combined_P_by_dt.xlsx'))
     dfz = pd.read_excel(join(read_dir, 'combined_coords.xlsx'))
 
-    dfz = dfz[dfz['id'].isin(only_pids)]
+    if only_pids is not None:
+        dfz = dfz[dfz['id'].isin(only_pids)]
 
     tids = dfz['tid'].unique()
 

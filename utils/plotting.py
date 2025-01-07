@@ -1,4 +1,5 @@
 import numpy as np
+from scipy.interpolate import griddata
 import matplotlib
 matplotlib.use('TkAgg')
 import matplotlib.pyplot as plt
@@ -21,7 +22,7 @@ def show_P_by_dt(df, savepath=None):
         plt.show()
 
 
-def show_combined_P_by_dt(dfs, savepath=None):
+def show_combined_P_by_dt(dfs, savepath=None, suptitle=None):
     """
     plotting.show_combined_P_by_dt(dfs)
     :param dfs:
@@ -50,6 +51,10 @@ def show_combined_P_by_dt(dfs, savepath=None):
         ax.grid(alpha=0.25)
         ax.legend(loc='upper left', bbox_to_anchor=(1, 1))
         ax.set_title('Group since reset: {}'.format(g))
+
+    if suptitle is not None:
+        plt.suptitle(suptitle)
+
     plt.tight_layout()
     if savepath is not None:
         plt.savefig(savepath, dpi=300, facecolor='white')
@@ -83,11 +88,60 @@ def show_combined_z_by_dt(dfs, savepath=None):
     ax.set_xlabel('Time (s)')
     ax.set_xticks(np.arange(0, dfs['dt'].max()))
     ax.set_ylabel(r'$z_{mean}(t) \: (\mu m)$')
-    ax.set_yticks(np.arange(0, dfs['z'].max() + 3.5, 5))
+    # ax.set_yticks(np.arange(0, dfs['z'].max() + 3.5, 5))
     ax.legend(title=r'$test_{ID}: \: \Delta_{max} z \: (\mu m)$')
     ax.grid(alpha=0.25)
     plt.tight_layout()
     if savepath is not None:
         plt.savefig(savepath, dpi=300, facecolor='white')
+    else:
+        plt.show()
+
+
+# ---
+
+def plot_2D_heatmap(df, pxyz, savepath=None, field=None, interpolate='linear', levels=15):
+    """
+
+    :param df:
+    :param pxyz:
+    :param: savepath:
+    :param field:
+    :param interpolate:
+    :param levels:
+    :return:
+    """
+
+    # get data
+    x, y, z = df[pxyz[0]].to_numpy(), df[pxyz[1]].to_numpy(), df[pxyz[2]].to_numpy()
+
+    # if no field is passed, use x-y limits.
+    if field is None:
+        field = (np.min([x.min(), y.min()]), np.max([x.max(), y.max()]))
+    # Create grid values.
+    xi = np.linspace(field[0], field[1], len(df))
+    yi = np.linspace(field[0], field[1], len(df))
+
+    # interpolate
+    zi = griddata((x, y), z, (xi[None, :], yi[:, None]), method=interpolate)
+
+    # plot
+    fig, ax = plt.subplots()
+
+    ax.contour(xi, yi, zi, levels=levels, linewidths=0.5, colors='k')
+    cntr1 = ax.contourf(xi, yi, zi, levels=levels, cmap="RdBu_r")
+
+    fig.colorbar(cntr1, ax=ax)
+    ax.plot(x, y, 'ko', ms=3)
+    ax.set(xlim=(field[0], field[1]), xticks=(field[0], field[1]),
+           ylim=(field[0], field[1]), yticks=(field[0], field[1]),
+           )
+    ax.invert_yaxis()
+    ax.set_xlabel('pix.')
+    ax.set_ylabel('pix.')
+
+    if savepath is not None:
+        plt.savefig(savepath, dpi=300, facecolor='white')
+        print("saved to: {}".format(savepath))
     else:
         plt.show()

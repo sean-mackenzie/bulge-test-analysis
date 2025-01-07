@@ -107,7 +107,7 @@ def fit_line(x, a, b):
 
 if __name__ == '__main__':
 
-    BASE_DIR = '/Users/mackenzie/Desktop/Bulge Test/Experiments/20250105_C9-0pT_NoMetal_3mmDia/analyses'
+    BASE_DIR = '/Users/mackenzie/Desktop/Bulge Test/Experiments/20250104_C7-20pT_4mmDia/analyses'
     SAVE_DIR = join(BASE_DIR, 'fit-w-by-p')
 
     MEMB_MAT = 'ELASTOSIL'
@@ -117,8 +117,8 @@ if __name__ == '__main__':
     # Use typical values to initialize model
     E, mu = solid_mechanics.get_mechanical_properties(mat=MEMB_MAT)
     # For curve_fit: define guess and lower and upper bounds
-    GUESS_E, LB_E, UB_E = 3e6, 1.0e6, 100.0e6  # Estimated by extrapolating Osmani et al. (2016), Fig. 7
-    GUESS_SIGMA_0, LB_SIGMA_0, UB_SIGMA_0 = 0.01e6, 0.0, 100.0e6
+    GUESS_E, LB_E, UB_E = 1e6, 1.0e6, 100.0e6  # Estimated by extrapolating Osmani et al. (2016), Fig. 7
+    GUESS_SIGMA_0, LB_SIGMA_0, UB_SIGMA_0 = 0.1e6, 0.0, 100.0e6
 
     FNP = 'combined_P_by_dt.xlsx'
     FNZ = 'combined_coords_dt-aligned-to-pressure.xlsx'
@@ -127,22 +127,26 @@ if __name__ == '__main__':
     Zx, Zy = 'dt_rel', 'z'
     Gx, Gp, Gz = 't', 'P', 'z'
 
-    SHOW_PLOTS = False
-    SAVE_PLOTS = True
-    SAVE_DF = True
-
-    TIDS = None  # None = all tids
-    PIDS = None  # None = all pids
-    T_MAX = 21  # discard pressures that are in-range but occur at time > T_MAX
-    dict_pfit = {
-        1: (5, 225, T_MAX),
-        2: (10, 185, T_MAX),
-        3: (5, 167.5, T_MAX),  # (Fit pressure min, fit pressure max, fit time max)
-        4: (5, 165, T_MAX),
+    dict_pfit = {  # (Fit pressure min, fit pressure max, fit time max)
+        1: (10, 550, 23),
+        2: (10, 550, 20.5),
+        3: (10, 550, 24.5),
+        4: (10, 550, 19),
+        5: (10, 550, 21),
+        6: (10, 550, 19),
     }
 
     # ---
 
+    tids = None  # None = all tids
+    pids = None  # None = all pids
+    save_dir_ = SAVE_DIR
+    base_dir = BASE_DIR
+    fnp = FNP
+    fnz = FNZ
+    show_plots = False  # should generally be False
+    save_plots = True  # for simplicity, always True
+    save_df = True  # for simplicity, always True
     plot_P_and_z_by_dt = True
     eval_z_by_P = True
     regularize_pz_on_t = True
@@ -150,16 +154,6 @@ if __name__ == '__main__':
     fit_linear_elastic = True
     fit_nonlinear_elastic = True
     fit_residual_stress = True
-
-    tids = TIDS
-    pids = PIDS
-    save_dir_ = SAVE_DIR
-    base_dir = BASE_DIR
-    fnp = FNP
-    fnz = FNZ
-    show_plots = SHOW_PLOTS
-    save_plots = SAVE_PLOTS
-    save_df = SAVE_DF
 
     # -
 
@@ -304,7 +298,7 @@ if __name__ == '__main__':
 
                 # -
                 # 3. resample z vs. P using fit
-                fP = np.arange(np.min([0, Pmin]), Pmax + 5)
+                fP = np.arange(np.min([0, Pmin]), P.max() + 5)
                 fz = fit_line(fP, *popt_data)
                 # -
                 # plot z by P
@@ -449,7 +443,7 @@ if __name__ == '__main__':
             # ---
 
             # append data
-            res = [tid, MEMB_RADIUS * 1e3, MEMB_THICK * 1e6, Pmin, Pmax,
+            res = [tid, MEMB_RADIUS * 1e3, MEMB_THICK * 1e6, df[Gp].min(), df[Gp].max(),
                    fit_line_slope, fit_line_y_intercept,
                    D, plate_model_E,
                    linear_model_E, linear_model_sigma_0 * 1e-3,
