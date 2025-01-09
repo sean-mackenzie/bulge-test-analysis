@@ -4,7 +4,7 @@ from utils import io, plotting
 
 if __name__ == '__main__':
 
-    BASE_DIR = '/Users/mackenzie/Desktop/Bulge Test/Experiments/20250104_C7-20pT_4mmDia'
+    BASE_DIR = '/Users/mackenzie/Desktop/Bulge Test/Experiments/BulgeTest_070824_200umSILP-0pT+30nmAu_4mmDia'
     SAVE_DIR = join(BASE_DIR, 'analyses')
     SAVE_FIG = join(SAVE_DIR, 'figs')
     FDIR = join(BASE_DIR, 'pressure')

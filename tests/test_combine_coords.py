@@ -9,25 +9,25 @@ matplotlib.use('TkAgg')
 import matplotlib.pyplot as plt
 
 if __name__ == '__main__':
-    BASE_DIR = '/Users/mackenzie/Desktop/Bulge Test/Experiments/20250104_C7-20pT_4mmDia'
+    BASE_DIR = '/Users/mackenzie/Desktop/Bulge Test/Experiments/BulgeTest_070824_200umSILP-0pT+30nmAu_4mmDia'
     SAVE_DIR = join(BASE_DIR, 'analyses')
     FDIR = join(BASE_DIR, 'results/coords')
     FTYPE = '.xlsx'
     SUBSTRING = 'test_coords_'
-    SORT_STRINGS = ['test', '.xlsx']
+    SORT_STRINGS = ['testset', '.xlsx']
     SCALE_Z = 1  # may need to rescale z if not scaled during 3D particle tracking analysis
     FLIP_Z = True  # if positive pressure, True. If vacuum pressure, False.
     SKIP_FRAME_ZERO = True
 
-    BEST_PIDS = [38]
+    BEST_PIDS = [17]
     BAD_PIDS = []
-    GOOD_PIDS = [30, 26, 38, 35, 37, 19]
+    GOOD_PIDS = [22, 28, 33, 7, 8, 32, 17, 40, 38]
     GOOD_PIDS = [x for x in GOOD_PIDS if x not in BAD_PIDS]
 
-    FRAME_RATE = 14.105
-    START_FRAME = 5
+    FRAME_RATE = 32.366
+    START_FRAME = 50
     TIME_START = START_FRAME / FRAME_RATE  # seconds (may vary between tests): avg(z: t < time_start)
-    TIME_EVAL = (180 / FRAME_RATE, 200 / FRAME_RATE)  # seconds (avg(dz: time_eval1 < t < time_eval2))
+    TIME_EVAL = (175 / FRAME_RATE, 300 / FRAME_RATE)  # seconds (avg(dz: time_eval1 < t < time_eval2))
     Z0 = ('auto', START_FRAME)  # if tuple, z0 (zero deflection) = avg(z: t < start_frame)
 
     # FUNCTION: COMBINE COORDS

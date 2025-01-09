@@ -107,18 +107,18 @@ def fit_line(x, a, b):
 
 if __name__ == '__main__':
 
-    BASE_DIR = '/Users/mackenzie/Desktop/Bulge Test/Experiments/20250104_C7-20pT_4mmDia/analyses'
+    BASE_DIR = '/Users/mackenzie/Desktop/Bulge Test/Experiments/BulgeTest_070824_200umSILP-0pT+30nmAu_4mmDia/analyses'
     SAVE_DIR = join(BASE_DIR, 'fit-w-by-p')
 
-    MEMB_MAT = 'ELASTOSIL'
+    MEMB_MAT = 'SILPURAN'
     MEMB_RADIUS = 2e-3  # (units: m)
-    MEMB_THICK = 20e-6  # (units: m)
+    MEMB_THICK = 200e-6  # (units: m)
 
     # Use typical values to initialize model
     E, mu = solid_mechanics.get_mechanical_properties(mat=MEMB_MAT)
     # For curve_fit: define guess and lower and upper bounds
     GUESS_E, LB_E, UB_E = 1e6, 1.0e6, 100.0e6  # Estimated by extrapolating Osmani et al. (2016), Fig. 7
-    GUESS_SIGMA_0, LB_SIGMA_0, UB_SIGMA_0 = 0.1e6, 0.0, 100.0e6
+    GUESS_SIGMA_0, LB_SIGMA_0, UB_SIGMA_0 = 0.01e6, 0.0, 100.0e6
 
     FNP = 'combined_P_by_dt.xlsx'
     FNZ = 'combined_coords_dt-aligned-to-pressure.xlsx'
@@ -128,12 +128,11 @@ if __name__ == '__main__':
     Gx, Gp, Gz = 't', 'P', 'z'
 
     dict_pfit = {  # (Fit pressure min, fit pressure max, fit time max)
-        1: (10, 550, 23),
-        2: (10, 550, 20.5),
-        3: (10, 550, 24.5),
-        4: (10, 550, 19),
-        5: (10, 550, 21),
-        6: (10, 550, 19),
+        3: (10, 352, 24.5),
+        4: (10, 405, 19),
+        5: (10, 420, 11),
+        6: (10, 420, 8.75),
+        7: (10, 450, 11.5),
     }
 
     # ---

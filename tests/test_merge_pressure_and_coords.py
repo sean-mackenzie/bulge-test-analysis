@@ -8,7 +8,7 @@ import matplotlib.pyplot as plt
 
 if __name__ == '__main__':
 
-    BASE_DIR = '/Users/mackenzie/Desktop/Bulge Test/Experiments/20250104_C7-20pT_4mmDia'
+    BASE_DIR = '/Users/mackenzie/Desktop/Bulge Test/Experiments/BulgeTest_070824_200umSILP-0pT+30nmAu_4mmDia'
     READ_DIR = join(BASE_DIR, 'analyses')
     SAVE_DIR = READ_DIR
     FIGS_DIR = join(READ_DIR, 'figs')
@@ -17,12 +17,11 @@ if __name__ == '__main__':
     PLOT_PER_PID = False
 
     DICT_DT_OVERLAYS = {
-        1: 11.4,
-        2: 10.05,
-        3: 14.8,
-        4: 9.675,
-        5: 11.6,
-        6: 9.9,
+        3: 4.5,
+        4: 5.75,
+        5: 6,
+        6: 4.775,
+        7: 7.4,
     }
 
     # ---

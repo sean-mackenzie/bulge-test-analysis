@@ -100,15 +100,16 @@ def show_combined_z_by_dt(dfs, savepath=None):
 
 # ---
 
-def plot_2D_heatmap(df, pxyz, savepath=None, field=None, interpolate='linear', levels=15):
+def plot_2D_heatmap(df, pxyz, savepath=None, field=None, interpolate='linear', levels=15, units=None):
     """
 
     :param df:
     :param pxyz:
     :param: savepath:
-    :param field:
+    :param field: (0, side-length of field-view (pixels or microns))
     :param interpolate:
     :param levels:
+    :param units: two-tuple (x-y units, z units), like: ('pixels', r'$\Delta z \: (\mu m)$')
     :return:
     """
 
@@ -118,6 +119,10 @@ def plot_2D_heatmap(df, pxyz, savepath=None, field=None, interpolate='linear', l
     # if no field is passed, use x-y limits.
     if field is None:
         field = (np.min([x.min(), y.min()]), np.max([x.max(), y.max()]))
+    # if no units, don't assume any
+    if units is None:
+        units = ('', '', '')
+
     # Create grid values.
     xi = np.linspace(field[0], field[1], len(df))
     yi = np.linspace(field[0], field[1], len(df))
@@ -131,17 +136,16 @@ def plot_2D_heatmap(df, pxyz, savepath=None, field=None, interpolate='linear', l
     ax.contour(xi, yi, zi, levels=levels, linewidths=0.5, colors='k')
     cntr1 = ax.contourf(xi, yi, zi, levels=levels, cmap="RdBu_r")
 
-    fig.colorbar(cntr1, ax=ax)
+    fig.colorbar(cntr1, ax=ax, label=units[2])
     ax.plot(x, y, 'ko', ms=3)
     ax.set(xlim=(field[0], field[1]), xticks=(field[0], field[1]),
            ylim=(field[0], field[1]), yticks=(field[0], field[1]),
            )
     ax.invert_yaxis()
-    ax.set_xlabel('pix.')
-    ax.set_ylabel('pix.')
+    ax.set_xlabel(r'$x$ ' + units[0])
+    ax.set_ylabel(r'$y$ ' + units[1])
 
     if savepath is not None:
         plt.savefig(savepath, dpi=300, facecolor='white')
-        print("saved to: {}".format(savepath))
     else:
         plt.show()
