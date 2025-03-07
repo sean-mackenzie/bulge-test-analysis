@@ -14,25 +14,25 @@ import matplotlib
 matplotlib.use('TkAgg')
 import matplotlib.pyplot as plt
 
-base_dir = '/Users/mackenzie/Desktop/Bulge Test/Experiments/BulgeTest_070824_200umSILP-0pT+30nmAu_4mmDia'
+base_dir = '/Users/mackenzie/Desktop/Bulge Test/Experiments/20250225_C13-20pT-25nmAu_2mmDia'
 read_dir = join(base_dir, 'results/coords')
-tid = 6
+tid = 2
 
-filename = 'test_coords_testset{}'.format(tid)
+filename = 'test_coords_test-{}'.format(tid)
 save_dir = join(base_dir, 'analyses')
 path_results = join(save_dir, 'representative_test{}'.format(tid))
 path_results_pids = join(path_results, 'pids')
 path_results_fit_plane = join(path_results, 'fit-plane')
 
-for pth in [save_dir, path_results, path_results_pids, path_results_fit_plane]:
+for pth in [save_dir, path_results, path_results_pids]:
     if not os.path.exists(pth):
         os.makedirs(pth)
 
 # 0. experimental parameters
-flip_z = True  # if positive pressure, True. If vacuum pressure, False.
+flip_z = False  # if positive pressure, True. If vacuum pressure, False.
 scale_z = 1
-frame_rate = 32.366
-padding = 5
+frame_rate = 20
+padding = 2
 num_pixels = 512
 img_xc, img_yc = num_pixels / 2 + padding, num_pixels / 2 + padding
 
@@ -46,8 +46,8 @@ df = io.read_coords(filepath=join(read_dir, filename + '.xlsx'),
                     only_pids=None)
 
 # 2. PROCESS: plot pids to determine "good" pids
-start_frame = 50  # average z(frame < start_frame) to estimate dz = 0
-end_frames = (150, 300)  # average z(frame > end_frame) to estimate dz_max
+start_frame = 5  # average z(frame < start_frame) to estimate dz = 0
+end_frames = (220, 240)  # average z(frame > end_frame) to estimate dz_max
 eval_pids, plot_pids = True, True
 if eval_pids:
     # fitting parameters
@@ -133,16 +133,20 @@ if eval_pids:
     # raise ValueError("Pause here to evaluate the results and pick out 'best' and 'bad' pids.")
 
 # NOTES (these variables have no purpose in this script, only "bad_pids")
-good_pids = [22, 28, 33, 7, 8, 32, 17, 40, 38]
-best_pids = [17]  # z-tracking is excellent (ideally, located at r = 0 (i.e., max deflection)
+good_pids = []
+best_pids = []  # z-tracking is excellent (ideally, located at r = 0 (i.e., max deflection)
 ok_pids = []  # z-tracking may be useful for analysis
 bad_pids = []  # data will be thrown out b/c not useful
 
 # ---
 
 # 3. PROCESS: fit plane to "good" pids before deflection
-fit_plane_analysis = True
+fit_plane_analysis = False
 if fit_plane_analysis:
+    path_results_fit_plane = join(path_results, 'fit-plane')
+    if not os.path.exists(path_results_fit_plane):
+        os.makedirs(path_results_fit_plane)
+
     px, py = 'frame', 'z'
     frames = df['frame'].unique()
 

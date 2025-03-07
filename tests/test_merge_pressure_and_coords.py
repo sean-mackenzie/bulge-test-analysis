@@ -8,7 +8,7 @@ import matplotlib.pyplot as plt
 
 if __name__ == '__main__':
 
-    BASE_DIR = '/Users/mackenzie/Desktop/Bulge Test/Experiments/BulgeTest_070824_200umSILP-0pT+30nmAu_4mmDia'
+    BASE_DIR = '/Users/mackenzie/Desktop/Bulge Test/Experiments/20250225_C13-20pT-25nmAu_2mmDia'
     READ_DIR = join(BASE_DIR, 'analyses')
     SAVE_DIR = READ_DIR
     FIGS_DIR = join(READ_DIR, 'figs')
@@ -16,12 +16,14 @@ if __name__ == '__main__':
     ONLY_PIDS = None  # None = all pids, otherwise should be a subset of those in combined_coords.xlsx
     PLOT_PER_PID = False
 
-    DICT_DT_OVERLAYS = {
-        3: 4.5,
-        4: 5.75,
-        5: 6,
-        6: 4.775,
-        7: 7.4,
+    DICT_DT_OVERLAYS = {  # These values define where the black scatter points (IDPT) begin (t=0)
+        1: 9.52,
+        2: 7.675,
+        3: 7.55,
+        4: 6.325,
+        5: 8,
+        6: 7,
+        7: 7,
     }
 
     # ---

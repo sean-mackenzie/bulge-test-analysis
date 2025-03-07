@@ -100,7 +100,7 @@ def show_combined_z_by_dt(dfs, savepath=None):
 
 # ---
 
-def plot_2D_heatmap(df, pxyz, savepath=None, field=None, interpolate='linear', levels=15, units=None):
+def plot_2D_heatmap(df, pxyz, savepath=None, field=None, interpolate='linear', levels=15, units=None, title=None):
     """
 
     :param df:
@@ -145,7 +145,13 @@ def plot_2D_heatmap(df, pxyz, savepath=None, field=None, interpolate='linear', l
     ax.set_xlabel(r'$x$ ' + units[0])
     ax.set_ylabel(r'$y$ ' + units[1])
 
+    if title is not None:
+        ax.set_title(title)
+
     if savepath is not None:
         plt.savefig(savepath, dpi=300, facecolor='white')
     else:
         plt.show()
+    plt.close()
+
+#

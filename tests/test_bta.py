@@ -107,12 +107,12 @@ def fit_line(x, a, b):
 
 if __name__ == '__main__':
 
-    BASE_DIR = '/Users/mackenzie/Desktop/Bulge Test/Experiments/BulgeTest_070824_200umSILP-0pT+30nmAu_4mmDia/analyses'
+    BASE_DIR = '/Users/mackenzie/Desktop/Bulge Test/Experiments/20250225_C13-20pT-25nmAu_2mmDia/analyses'
     SAVE_DIR = join(BASE_DIR, 'fit-w-by-p')
 
-    MEMB_MAT = 'SILPURAN'
-    MEMB_RADIUS = 2e-3  # (units: m)
-    MEMB_THICK = 200e-6  # (units: m)
+    MEMB_MAT = 'ELASTOSIL'
+    MEMB_RADIUS = 1e-3  # (units: m)
+    MEMB_THICK = 20e-6  # (units: m)
 
     # Use typical values to initialize model
     E, mu = solid_mechanics.get_mechanical_properties(mat=MEMB_MAT)
@@ -128,11 +128,13 @@ if __name__ == '__main__':
     Gx, Gp, Gz = 't', 'P', 'z'
 
     dict_pfit = {  # (Fit pressure min, fit pressure max, fit time max)
-        3: (10, 352, 24.5),
-        4: (10, 405, 19),
-        5: (10, 420, 11),
-        6: (10, 420, 8.75),
-        7: (10, 450, 11.5),
+        1: (10, 1000, 19),
+        2: (10, 1000, 17.5),
+        3: (10, 1000, 16.75),
+        4: (10, 1000, 15.75),
+        5: (10, 1000, 17.5),
+        6: (10, 1000, 11.8),
+        7: (10, 1600, 16.85),
     }
 
     # ---
