@@ -5,7 +5,7 @@ import pandas as pd
 from utils import io, plotting
 
 import matplotlib
-matplotlib.use('TkAgg')
+# matplotlib.use('TkAgg')
 import matplotlib.pyplot as plt
 
 if __name__ == '__main__':

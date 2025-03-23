@@ -11,7 +11,7 @@ from scipy.interpolate import splrep, BSpline
 from utils import fit, io, plotting
 
 import matplotlib
-matplotlib.use('TkAgg')
+# matplotlib.use('TkAgg')
 import matplotlib.pyplot as plt
 
 base_dir = '/Users/mackenzie/Desktop/Bulge Test/Experiments/20250225_C13-20pT-25nmAu_2mmDia'

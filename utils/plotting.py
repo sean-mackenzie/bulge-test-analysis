@@ -1,8 +1,8 @@
 import numpy as np
 from scipy.interpolate import griddata
-import matplotlib
-matplotlib.use('TkAgg')
 import matplotlib.pyplot as plt
+# matplotlib.use('TkAgg')
+
 """
 See more on backends: https://matplotlib.org/stable/users/explain/figure/backends.html
 Another option: https://stackoverflow.com/questions/49048520/how-to-prevent-pycharm-from-overriding-default-backend-as-set-in-matplotlib
