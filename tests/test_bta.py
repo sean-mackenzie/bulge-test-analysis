@@ -15,6 +15,7 @@ import matplotlib.pyplot as plt
 
 from bta import solid_mechanics
 from bta.solid_mechanics import fSphericalUniformLoad, fBulgeTheory
+from other_physics.calculate_thickness_after_pre_stretch import calculate_stretched_thickness
 
 
 def plot_overlay(tid, dfptid, dfztid, pids, show_plots, save_plots, save_dir):
@@ -107,18 +108,22 @@ def fit_line(x, a, b):
 
 if __name__ == '__main__':
 
-    BASE_DIR = '/Users/mackenzie/Desktop/Bulge Test/Experiments/20250225_C13-20pT-25nmAu_2mmDia/analyses'
-    SAVE_DIR = join(BASE_DIR, 'fit-w-by-p')
+    BASE_DIR = '/Users/mackenzie/Library/CloudStorage/Box-Box/2024/Bulge Tests/Analyses/20250302_C17-20pT_25nmAu_2mmDia'
+    READ_DIR = join(BASE_DIR, 'analyses')
+    SAVE_DIR = join(BASE_DIR, 'analyses', 'fit-w-by-p')
 
     MEMB_MAT = 'ELASTOSIL'
-    MEMB_RADIUS = 1e-3  # (units: m)
+    MEMB_RADIUS = 1.0e-3  # (units: m)
     MEMB_THICK = 20e-6  # (units: m)
+    MEMB_PRE_STRETCH = 1.25
+    MEMB_THICK_POST_STRETCH = calculate_stretched_thickness(MEMB_THICK, MEMB_PRE_STRETCH)
+    print("Membrane thickness post {} pre-stretch: {}".format(MEMB_PRE_STRETCH, np.round(MEMB_THICK_POST_STRETCH * 1e6, 2)))
 
     # Use typical values to initialize model
     E, mu = solid_mechanics.get_mechanical_properties(mat=MEMB_MAT)
     # For curve_fit: define guess and lower and upper bounds
-    GUESS_E, LB_E, UB_E = 1e6, 1.0e6, 100.0e6  # Estimated by extrapolating Osmani et al. (2016), Fig. 7
-    GUESS_SIGMA_0, LB_SIGMA_0, UB_SIGMA_0 = 0.01e6, 0.0, 100.0e6
+    GUESS_E, LB_E, UB_E = 12.5e6, 1.1e6, 35.0e6  # Estimated by extrapolating Osmani et al. (2016), Fig. 7
+    GUESS_SIGMA_0, LB_SIGMA_0, UB_SIGMA_0 = 500e3, 0.0, 1500.0e3
 
     FNP = 'combined_P_by_dt.xlsx'
     FNZ = 'combined_coords_dt-aligned-to-pressure.xlsx'
@@ -128,13 +133,13 @@ if __name__ == '__main__':
     Gx, Gp, Gz = 't', 'P', 'z'
 
     dict_pfit = {  # (Fit pressure min, fit pressure max, fit time max)
-        1: (10, 1000, 19),
-        2: (10, 1000, 17.5),
-        3: (10, 1000, 16.75),
-        4: (10, 1000, 15.75),
-        5: (10, 1000, 17.5),
-        6: (10, 1000, 11.8),
-        7: (10, 1600, 16.85),
+        1: (20, 1000, 20),
+        2: (20, 1000, 12.25),
+        3: (20, 2000, 17.25),
+        4: (100, 2000, 25.0),
+        5: (20, 1000, 11.0),
+        6: (20, 1000, 12.0),
+        7: (20, 1600, 16.75),
     }
 
     # ---
@@ -142,7 +147,7 @@ if __name__ == '__main__':
     tids = None  # None = all tids
     pids = None  # None = all pids
     save_dir_ = SAVE_DIR
-    base_dir = BASE_DIR
+    read_dir = READ_DIR
     fnp = FNP
     fnz = FNZ
     show_plots = False  # should generally be False
@@ -158,8 +163,8 @@ if __name__ == '__main__':
 
     # -
 
-    dfp_ = pd.read_excel(join(base_dir, fnp))
-    dfz_ = pd.read_excel(join(base_dir, fnz))
+    dfp_ = pd.read_excel(join(read_dir, fnp))
+    dfz_ = pd.read_excel(join(read_dir, fnz))
 
     if tids is None:
         tids = dfz_['tid'].unique()
@@ -319,13 +324,13 @@ if __name__ == '__main__':
                 # eval data with respect to solid mechanics
                 # -
                 # flexural rigidity (based solely on geometry and mechanical properties; i.e., not on pressure)
-                D = solid_mechanics.flexural_rigidity(E=E, t=MEMB_THICK, mu=mu)
+                D = solid_mechanics.flexural_rigidity(E=E, t=MEMB_THICK_POST_STRETCH, mu=mu)
                 # analytical deflection
                 w = solid_mechanics.circ_center_deflection(p_o=fP, R=MEMB_RADIUS, D=D)
 
                 # -
                 # fit data to model
-                mPlate = fSphericalUniformLoad(r=MEMB_RADIUS, h=MEMB_THICK, youngs_modulus=E, poisson=mu)
+                mPlate = fSphericalUniformLoad(r=MEMB_RADIUS, h=MEMB_THICK_POST_STRETCH, youngs_modulus=E, poisson=mu)
                 popt_model, pcov = curve_fit(mPlate.spherical_uniformly_loaded_clamped_plate_p_e, fP, fz * 1e-6)
                 plate_model_E = np.round(popt_model[0] * 1e-6, 2)
                 mz = mPlate.spherical_uniformly_loaded_clamped_plate_p_e(fP, *popt_model)
@@ -358,7 +363,7 @@ if __name__ == '__main__':
                 fz = np.linspace(0, np.max(z), 25)
                 # ---
                 # set up model
-                mBulgeLinear = fBulgeTheory(r=MEMB_RADIUS, h=MEMB_THICK, youngs_modulus=E, poisson=mu)
+                mBulgeLinear = fBulgeTheory(r=MEMB_RADIUS, h=MEMB_THICK_POST_STRETCH, youngs_modulus=E, poisson=mu)
                 # -
                 # fit model
                 if fit_residual_stress:
@@ -405,7 +410,7 @@ if __name__ == '__main__':
                 fz = np.linspace(0, np.max(z), 25)
                 # ---
                 # set up model
-                mBulgeNonLinear = fBulgeTheory(r=MEMB_RADIUS, h=MEMB_THICK, youngs_modulus=E, poisson=mu)
+                mBulgeNonLinear = fBulgeTheory(r=MEMB_RADIUS, h=MEMB_THICK_POST_STRETCH, youngs_modulus=E, poisson=mu)
                 # fit data to model
                 if fit_residual_stress:
                     popt_model, pcov = curve_fit(f=mBulgeNonLinear.nonlinear_elastic_dz_e_sigma,
@@ -444,7 +449,9 @@ if __name__ == '__main__':
             # ---
 
             # append data
-            res = [tid, MEMB_RADIUS * 1e3, MEMB_THICK * 1e6, df[Gp].min(), df[Gp].max(),
+            res = [tid, MEMB_RADIUS * 1e3,
+                   MEMB_THICK * 1e6, MEMB_PRE_STRETCH, MEMB_THICK_POST_STRETCH * 1e6,
+                   df[Gp].min(), df[Gp].max(),
                    fit_line_slope, fit_line_y_intercept,
                    D, plate_model_E,
                    linear_model_E, linear_model_sigma_0 * 1e-3,
@@ -456,7 +463,9 @@ if __name__ == '__main__':
     df_res = pd.DataFrame(
         np.array(results),
         columns=[
-            'tid', 'radius_mm', 'thickness_um', 'Pmin_Pa', 'Pmax_Pa',
+            'tid', 'radius_mm',
+            'thickness_um', 'pre_stretch', 'thickness_um_post_stretch',
+            'Pmin_Pa', 'Pmax_Pa',
             'fit_line_slope_um_per_Pa', 'fit_line_y_intercept_um',
             'flexural_rigidity', 'plate_model_E_MPa',
             'linear_model_E_MPa', 'linear_model_sigma_0_MPa',

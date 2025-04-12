@@ -20,7 +20,7 @@ def read_pressure_txt(filepath, cols=None, correction_function=1):
     return df
 
 
-def combine_pressure_txt(fdir, ftype, fn_strings, cols, correction_function):
+def combine_pressure_txt(fdir, ftype, fn_strings, cols, correction_function, fn_startswith=None):
     """
     dfs = io.combine_pressure_txt(fdir, ftype, fn_strings)
     :param fdir:
@@ -30,7 +30,7 @@ def combine_pressure_txt(fdir, ftype, fn_strings, cols, correction_function):
     :param correction_function:
     :return:
     """
-    files = find_files(fdir=fdir, ftype=ftype)
+    files = find_files(fdir=fdir, ftype=ftype, fn_startswith=fn_startswith)
     files, names = sort_files(files, sort_strings=[fn_strings[0], fn_strings[1]])
 
     t_curr, t_reset_group = 0, 0
@@ -111,8 +111,11 @@ def combine_coords(fdir, substring, sort_strings, scale_z=1, z0=0, flip_z=False,
     return dfs
 
 
-def find_files(fdir, ftype):
-    files = [f for f in os.listdir(fdir) if f.endswith(ftype)]
+def find_files(fdir, ftype, fn_startswith=None):
+    if fn_startswith is not None:
+        files = [f for f in os.listdir(fdir) if f.startswith(fn_startswith) and f.endswith(ftype)]
+    else:
+        files = [f for f in os.listdir(fdir) if f.endswith(ftype)]
     return files
 
 def find_subfiles(fdir, substring):

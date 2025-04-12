@@ -24,6 +24,31 @@ def effective_youngs_modulus_bilayer(t_silicone, E_silicone, t_gold, E_gold):
     return E_effective
 
 
+def estimate_gold_modulus_from_effective(
+    E_eff_measured,
+    t_elastomer,
+    E_elastomer,
+    t_gold
+):
+    """
+    Estimates the Young's modulus of the gold film using a rule-of-mixtures model for in-plane membrane stiffness.
+
+    Parameters:
+    - E_eff_measured: effective Young's modulus of the bilayer system (Pa)
+    - t_elastomer: thickness of the elastomer layer (m)
+    - E_elastomer: Young's modulus of the elastomer (Pa)
+    - t_gold: thickness of the gold film (m)
+
+    Returns:
+    - E_gold_estimated: estimated Young's modulus of the gold film (Pa)
+    """
+    t_total = t_elastomer + t_gold
+    numerator = E_eff_measured * t_total - E_elastomer * t_elastomer
+    E_gold_estimated = numerator / t_gold
+    return E_gold_estimated
+
+
+
 if __name__ == "__main__":
 
     # Example parameters
@@ -50,3 +75,20 @@ if __name__ == "__main__":
         fontsize='small')
     plt.tight_layout()
     plt.show()
+
+    # ----
+
+    # Example usage
+    E_eff_measured = 3.81e6  # Pa (measured from bulge test)
+    t_elastomer = 20e-6  # m
+    E_elastomer = 1.1e6  # Pa
+    t_gold = 20e-9  # m
+
+    E_gold_estimated = estimate_gold_modulus_from_effective(
+        E_eff_measured,
+        t_elastomer,
+        E_elastomer,
+        t_gold
+    )
+
+    print(E_gold_estimated)

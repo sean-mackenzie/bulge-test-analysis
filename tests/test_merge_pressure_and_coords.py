@@ -8,22 +8,23 @@ import matplotlib.pyplot as plt
 
 if __name__ == '__main__':
 
-    BASE_DIR = '/Users/mackenzie/Desktop/Bulge Test/Experiments/20250225_C13-20pT-25nmAu_2mmDia'
+    BASE_DIR = '/Users/mackenzie/Library/CloudStorage/Box-Box/2024/Bulge Tests/Analyses/20250302_C17-20pT_25nmAu_2mmDia'
     READ_DIR = join(BASE_DIR, 'analyses')
     SAVE_DIR = READ_DIR
     FIGS_DIR = join(READ_DIR, 'figs')
 
+    ONLY_TIDS = [5, 6, 7]
     ONLY_PIDS = None  # None = all pids, otherwise should be a subset of those in combined_coords.xlsx
     PLOT_PER_PID = False
 
     DICT_DT_OVERLAYS = {  # These values define where the black scatter points (IDPT) begin (t=0)
-        1: 9.52,
-        2: 7.675,
-        3: 7.55,
-        4: 6.325,
-        5: 8,
-        6: 7,
-        7: 7,
+        1: 10.75,
+        2: 6.8,
+        3: 8.35,
+        4: 6,
+        5: 5.15,
+        6: 7.65,
+        7: 7.35,
     }
 
     # ---
@@ -48,7 +49,10 @@ if __name__ == '__main__':
     if only_pids is not None:
         dfz = dfz[dfz['id'].isin(only_pids)]
 
-    tids = dfz['tid'].unique()
+    if ONLY_TIDS is None:
+        tids = dfz['tid'].unique()
+    else:
+        tids = ONLY_TIDS
 
     dfs = []
     for tid in tids:

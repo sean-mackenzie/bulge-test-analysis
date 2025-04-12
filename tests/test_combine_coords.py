@@ -9,7 +9,7 @@ import matplotlib
 import matplotlib.pyplot as plt
 
 if __name__ == '__main__':
-    BASE_DIR = '/Users/mackenzie/Desktop/Bulge Test/Experiments/20250225_C13-20pT-25nmAu_2mmDia'
+    BASE_DIR = '/Users/mackenzie/Library/CloudStorage/Box-Box/2024/Bulge Tests/Analyses/20250410_C15-15pT-25nmAu_3mmDia'
     SAVE_DIR = join(BASE_DIR, 'analyses')
     FDIR = join(BASE_DIR, 'results/coords')
     FTYPE = '.xlsx'
@@ -19,15 +19,15 @@ if __name__ == '__main__':
     FLIP_Z = False  # if positive pressure, True. If vacuum pressure, False.
     SKIP_FRAME_ZERO = True
 
-    BEST_PIDS = [11]
+    BEST_PIDS = [18]
     BAD_PIDS = []
-    GOOD_PIDS = [11, 1, 3, 0]
+    GOOD_PIDS = [9, 12, 17, 18, 19, 20, 23]
     GOOD_PIDS = [x for x in GOOD_PIDS if x not in BAD_PIDS]
 
     FRAME_RATE = 20
     START_FRAME = 10
     TIME_START = START_FRAME / FRAME_RATE  # seconds (may vary between tests): avg(z: t < time_start)
-    TIME_EVAL = (220 / FRAME_RATE, 240 / FRAME_RATE)  # seconds (avg(dz: time_eval1 < t < time_eval2))
+    TIME_EVAL = (400 / FRAME_RATE, 420 / FRAME_RATE)  # seconds (avg(dz: time_eval1 < t < time_eval2))
     Z0 = ('auto', START_FRAME)  # if tuple, z0 (zero deflection) = avg(z: t < start_frame)
 
     # FUNCTION: COMBINE COORDS

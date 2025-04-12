@@ -4,19 +4,19 @@ from utils import io, plotting, processing
 
 if __name__ == '__main__':
 
-    BASE_DIR = '/Users/mackenzie/Desktop/Bulge Test/Experiments/20250225_C13-20pT-25nmAu_2mmDia'
+    BASE_DIR = '/Users/mackenzie/Library/CloudStorage/Box-Box/2024/Bulge Tests/Analyses/20250410_C15-15pT-25nmAu_3mmDia'
     SAVE_DIR = join(BASE_DIR, 'analyses')
     SAVE_FIG = join(SAVE_DIR, 'figs')
     FDIR = join(BASE_DIR, 'pressure')
     FTYPE = '.txt'
     FN_STR1 = 'test'
     PCOLS = ['t_reset', 'T', 'P']
-    PRESSURE_CORRECTION_FUNCTION = 1
+    PRESSURE_CORRECTION_FUNCTION = -1
 
     # extrapolate
-    EXTRAPOLATE_TID = None  # if None, then do not extrapolate
-    FIT_DT = (9.5, 11.5)  # (t_min, t_max): time points corresponding to pressure range to fit to
-    EXTRAPOLATE_TO = 1530  # pressure (Pa) to linearly extrapolate fitted line to
+    EXTRAPOLATE_TID = 4  # if None, then do not extrapolate
+    FIT_DT = (10, 13.75)  # (t_min, t_max): time points corresponding to pressure range to fit to
+    EXTRAPOLATE_TO = 542*3  # pressure (Pa) to linearly extrapolate fitted line to
 
     for pth in [SAVE_DIR, SAVE_FIG]:
         if not os.path.exists(pth):
@@ -31,6 +31,23 @@ if __name__ == '__main__':
 
     dfs = io.combine_pressure_txt(fdir=FDIR, ftype=FTYPE, fn_strings=[FN_STR1, FTYPE], cols=PCOLS,
                                   correction_function=PRESSURE_CORRECTION_FUNCTION)
+
+    # plot pressure profiles overlay
+    import matplotlib.pyplot as plt
+    fig, ax = plt.subplots()
+    for tid in dfs['tid'].unique():
+        dft = dfs[dfs['tid'] == tid]
+        ax.plot(dft['dt'], dft['P'], '-', linewidth=0.5,
+                label='{}: {} Pa'.format(tid, dft['P'].max()))
+    ax.set_xlabel('dt (s)')
+    ax.set_ylabel('P (Pa)')
+    ax.grid(alpha=0.25)
+    ax.legend(title='TID: Pmax')
+    plt.tight_layout()
+    plt.savefig(join(SAVE_FIG, 'overlay-P_by_dt.png'), dpi=300, facecolor='white', bbox_inches='tight')
+    plt.show()
+    plt.close()
+
 
     # extrapolate pressure data
     if EXTRAPOLATE_TID is not None:
