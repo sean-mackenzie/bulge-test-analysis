@@ -1,10 +1,15 @@
 import os
 from os.path import join
+
+import numpy as np
+
 from utils import io, plotting, processing
 
 if __name__ == '__main__':
+    BULGE_ID = '20250415_C15-15pT-0nmAu_4mmDia'
 
-    BASE_DIR = '/Users/mackenzie/Library/CloudStorage/Box-Box/2024/Bulge Tests/Analyses/20250410_C15-15pT-25nmAu_3mmDia'
+    ROOT_DIR = '/Users/mackenzie/Library/CloudStorage/Box-Box/2024/Bulge Tests/Analyses'
+    BASE_DIR = join(ROOT_DIR, BULGE_ID)
     SAVE_DIR = join(BASE_DIR, 'analyses')
     SAVE_FIG = join(SAVE_DIR, 'figs')
     FDIR = join(BASE_DIR, 'pressure')
@@ -14,9 +19,9 @@ if __name__ == '__main__':
     PRESSURE_CORRECTION_FUNCTION = -1
 
     # extrapolate
-    EXTRAPOLATE_TID = 4  # if None, then do not extrapolate
-    FIT_DT = (10, 13.75)  # (t_min, t_max): time points corresponding to pressure range to fit to
-    EXTRAPOLATE_TO = 542*3  # pressure (Pa) to linearly extrapolate fitted line to
+    EXTRAPOLATE_TIDS = [4, 5]  # if None, then do not extrapolate
+    FIT_DTS = [(14, 20), (10, 13.75) ]  # (t_min, t_max): time points corresponding to pressure range to fit to
+    EXTRAPOLATE_TOS = [510*2, 510*3]  # pressure (Pa) to linearly extrapolate fitted line to
 
     for pth in [SAVE_DIR, SAVE_FIG]:
         if not os.path.exists(pth):
@@ -33,34 +38,38 @@ if __name__ == '__main__':
                                   correction_function=PRESSURE_CORRECTION_FUNCTION)
 
     # plot pressure profiles overlay
-    import matplotlib.pyplot as plt
-    fig, ax = plt.subplots()
-    for tid in dfs['tid'].unique():
-        dft = dfs[dfs['tid'] == tid]
-        ax.plot(dft['dt'], dft['P'], '-', linewidth=0.5,
-                label='{}: {} Pa'.format(tid, dft['P'].max()))
-    ax.set_xlabel('dt (s)')
-    ax.set_ylabel('P (Pa)')
-    ax.grid(alpha=0.25)
-    ax.legend(title='TID: Pmax')
-    plt.tight_layout()
-    plt.savefig(join(SAVE_FIG, 'overlay-P_by_dt.png'), dpi=300, facecolor='white', bbox_inches='tight')
-    plt.show()
-    plt.close()
+    plot_ = True
+    if plot_:
+        import matplotlib.pyplot as plt
+        fig, ax = plt.subplots(figsize=(10, 3.5))
+        for tid in dfs['tid'].unique():
+            dft = dfs[dfs['tid'] == tid]
+            ax.plot(dft['dt'], dft['P'], '-', linewidth=0.5,
+                    label='{}: {} Pa'.format(tid, dft['P'].max()))
+        ax.set_xlabel('dt (s)')
+        ax.set_xticks(np.arange(0, dfs['dt'].max(), 2))
+        ax.set_ylabel('P (Pa)')
+        ax.grid(alpha=0.25)
+        ax.legend(title='TID: Pmax')
+        plt.tight_layout()
+        plt.savefig(join(SAVE_FIG, 'overlay-P_by_dt.png'), dpi=300, facecolor='white', bbox_inches='tight')
+        plt.show()
+        plt.close()
 
 
     # extrapolate pressure data
-    if EXTRAPOLATE_TID is not None:
+    if EXTRAPOLATE_TIDS is not None:
         # 1. export "raw" data
         dfs.to_excel(join(SAVE_DIR, 'combined_P_by_dt__raw.xlsx'), index=False)
         plotting.show_combined_P_by_dt(dfs, savepath=join(SAVE_FIG, 'combined_P_by_dt__raw.png'), suptitle=suptitle)
 
-        dfs = processing.replace_with_extrapolated_pressure(
-            dfs=dfs,
-            extrapolate_tid=EXTRAPOLATE_TID,
-            fit_dt=FIT_DT,
-            extrapolate_to=EXTRAPOLATE_TO,
-            savepath=join(SAVE_FIG, 'extrapolated_P_by_dt.png'))
+        for EXTRAPOLATE_TID, FIT_DT, EXTRAPOLATE_TO in zip(EXTRAPOLATE_TIDS, FIT_DTS, EXTRAPOLATE_TOS):
+            dfs = processing.replace_with_extrapolated_pressure(
+                dfs=dfs,
+                extrapolate_tid=EXTRAPOLATE_TID,
+                fit_dt=FIT_DT,
+                extrapolate_to=EXTRAPOLATE_TO,
+                savepath=join(SAVE_FIG, 'extrapolated_P_by_dt_tid{}.png'.format(EXTRAPOLATE_TID)))
 
 
     dfs.to_excel(join(SAVE_DIR, 'combined_P_by_dt.xlsx'), index=False)

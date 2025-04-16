@@ -13,7 +13,7 @@ def get_mechanical_properties(mat):
         E = 1.2e6
         mu = 0.499
     elif mat in ['ELASTOSIL', 'elastosil']:
-        E = 1.1e6
+        E = 1.2e6
         mu = 0.499
     elif mat in ['PDMS', 'pdms']:
         E = 0.75e6

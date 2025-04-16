@@ -107,23 +107,25 @@ def fit_line(x, a, b):
 
 
 if __name__ == '__main__':
+    BULGE_ID = '20250415_C15-15pT-0nmAu_4mmDia'
 
-    BASE_DIR = '/Users/mackenzie/Library/CloudStorage/Box-Box/2024/Bulge Tests/Analyses/20250302_C17-20pT_25nmAu_2mmDia'
+    ROOT_DIR = '/Users/mackenzie/Library/CloudStorage/Box-Box/2024/Bulge Tests/Analyses'
+    BASE_DIR = join(ROOT_DIR, BULGE_ID)
     READ_DIR = join(BASE_DIR, 'analyses')
     SAVE_DIR = join(BASE_DIR, 'analyses', 'fit-w-by-p')
 
     MEMB_MAT = 'ELASTOSIL'
-    MEMB_RADIUS = 1.0e-3  # (units: m)
+    MEMB_RADIUS = 2.0e-3  # (units: m)
     MEMB_THICK = 20e-6  # (units: m)
-    MEMB_PRE_STRETCH = 1.25
+    MEMB_PRE_STRETCH = 1.146
     MEMB_THICK_POST_STRETCH = calculate_stretched_thickness(MEMB_THICK, MEMB_PRE_STRETCH)
     print("Membrane thickness post {} pre-stretch: {}".format(MEMB_PRE_STRETCH, np.round(MEMB_THICK_POST_STRETCH * 1e6, 2)))
 
     # Use typical values to initialize model
     E, mu = solid_mechanics.get_mechanical_properties(mat=MEMB_MAT)
     # For curve_fit: define guess and lower and upper bounds
-    GUESS_E, LB_E, UB_E = 12.5e6, 1.1e6, 35.0e6  # Estimated by extrapolating Osmani et al. (2016), Fig. 7
-    GUESS_SIGMA_0, LB_SIGMA_0, UB_SIGMA_0 = 500e3, 0.0, 1500.0e3
+    GUESS_E, LB_E, UB_E = 3.5e6, 1.1e6, 35.0e6  # Estimated by extrapolating Osmani et al. (2016), Fig. 7
+    GUESS_SIGMA_0, LB_SIGMA_0, UB_SIGMA_0 = 200e3, 0.0, 1500.0e3
 
     FNP = 'combined_P_by_dt.xlsx'
     FNZ = 'combined_coords_dt-aligned-to-pressure.xlsx'
@@ -134,10 +136,10 @@ if __name__ == '__main__':
 
     dict_pfit = {  # (Fit pressure min, fit pressure max, fit time max)
         1: (20, 1000, 20),
-        2: (20, 1000, 12.25),
-        3: (20, 2000, 17.25),
-        4: (100, 2000, 25.0),
-        5: (20, 1000, 11.0),
+        2: (20, 1000, 23),
+        3: (20, 2000, 30),
+        4: (25, 2000, 26),
+        5: (25, 2000, 20.0),
         6: (20, 1000, 12.0),
         7: (20, 1600, 16.75),
     }

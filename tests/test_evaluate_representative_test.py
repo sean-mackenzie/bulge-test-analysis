@@ -14,7 +14,10 @@ import matplotlib
 # matplotlib.use('TkAgg')
 import matplotlib.pyplot as plt
 
-base_dir = '/Users/mackenzie/Library/CloudStorage/Box-Box/2024/Bulge Tests/Analyses/20250410_C15-15pT-25nmAu_3mmDia'
+BULGE_ID = '20250415_C15-15pT-0nmAu_4mmDia'
+
+ROOT_DIR = '/Users/mackenzie/Library/CloudStorage/Box-Box/2024/Bulge Tests/Analyses'
+base_dir = join(ROOT_DIR, BULGE_ID)
 read_dir = join(base_dir, 'results/coords')
 tid = 4
 
@@ -31,8 +34,8 @@ for pth in [save_dir, path_results, path_results_pids]:
 # 0. experimental parameters
 flip_z = False  # if positive pressure, True. If vacuum pressure, False.
 scale_z = 1
-frame_rate = 20
-padding = 11
+frame_rate = 10
+padding = 40
 num_pixels = 512
 img_xc, img_yc = num_pixels / 2 + padding, num_pixels / 2 + padding
 
@@ -45,9 +48,10 @@ df = io.read_coords(filepath=join(read_dir, filename + '.xlsx'),
                     skip_frame_zero=True,
                     only_pids=None)
 
+
 # 2. PROCESS: plot pids to determine "good" pids
-start_frame = 10  # average z(frame < start_frame) to estimate dz = 0
-end_frames = (400, 425)  # average z(frame > end_frame) to estimate dz_max
+start_frame = 20  # average z(frame < start_frame) to estimate dz = 0
+end_frames = (200, 250)  # average z(frame > end_frame) to estimate dz_max
 eval_pids, plot_pids = True, True
 if eval_pids:
     # fitting parameters

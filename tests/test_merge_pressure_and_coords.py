@@ -7,22 +7,24 @@ import matplotlib
 import matplotlib.pyplot as plt
 
 if __name__ == '__main__':
+    BULGE_ID = '20250415_C15-15pT-0nmAu_4mmDia'
 
-    BASE_DIR = '/Users/mackenzie/Library/CloudStorage/Box-Box/2024/Bulge Tests/Analyses/20250302_C17-20pT_25nmAu_2mmDia'
+    ROOT_DIR = '/Users/mackenzie/Library/CloudStorage/Box-Box/2024/Bulge Tests/Analyses'
+    BASE_DIR = join(ROOT_DIR, BULGE_ID)
     READ_DIR = join(BASE_DIR, 'analyses')
     SAVE_DIR = READ_DIR
     FIGS_DIR = join(READ_DIR, 'figs')
 
-    ONLY_TIDS = [5, 6, 7]
+    ONLY_TIDS = [2, 3, 4, 5]
     ONLY_PIDS = None  # None = all pids, otherwise should be a subset of those in combined_coords.xlsx
     PLOT_PER_PID = False
 
     DICT_DT_OVERLAYS = {  # These values define where the black scatter points (IDPT) begin (t=0)
-        1: 10.75,
-        2: 6.8,
-        3: 8.35,
-        4: 6,
-        5: 5.15,
+        1: 5,
+        2: 7.15,
+        3: 13.2,  # 13.15
+        4: 9.5,  # 9.45
+        5: 5.05,  # 5
         6: 7.65,
         7: 7.35,
     }
