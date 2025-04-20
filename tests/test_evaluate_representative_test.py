@@ -14,12 +14,12 @@ import matplotlib
 # matplotlib.use('TkAgg')
 import matplotlib.pyplot as plt
 
-BULGE_ID = '20250415_C15-15pT-0nmAu_4mmDia'
+BULGE_ID = '20250105_C5-30pT_15nmAu_4mmDia'
 
 ROOT_DIR = '/Users/mackenzie/Library/CloudStorage/Box-Box/2024/Bulge Tests/Analyses'
 base_dir = join(ROOT_DIR, BULGE_ID)
 read_dir = join(base_dir, 'results/coords')
-tid = 4
+tid = 2
 
 filename = 'test_coords_test-{}'.format(tid)
 save_dir = join(base_dir, 'analyses')
@@ -34,8 +34,8 @@ for pth in [save_dir, path_results, path_results_pids]:
 # 0. experimental parameters
 flip_z = False  # if positive pressure, True. If vacuum pressure, False.
 scale_z = 1
-frame_rate = 10
-padding = 40
+frame_rate = 11.001
+padding = 25
 num_pixels = 512
 img_xc, img_yc = num_pixels / 2 + padding, num_pixels / 2 + padding
 
@@ -50,8 +50,8 @@ df = io.read_coords(filepath=join(read_dir, filename + '.xlsx'),
 
 
 # 2. PROCESS: plot pids to determine "good" pids
-start_frame = 20  # average z(frame < start_frame) to estimate dz = 0
-end_frames = (200, 250)  # average z(frame > end_frame) to estimate dz_max
+start_frame = 15  # average z(frame < start_frame) to estimate dz = 0
+end_frames = (185, 205)  # average z(frame > end_frame) to estimate dz_max
 eval_pids, plot_pids = True, True
 if eval_pids:
     # fitting parameters
@@ -97,6 +97,9 @@ if eval_pids:
 
             # plot "raw" 3D particle tracking coords
             ax.plot(dfpid[px], dfpid[py], 'o', ms=1, label=pid, alpha=0.8, zorder=3.5)
+            ax.axvline(x=start_frame, color='k', linestyle='--', linewidth=0.5, alpha=0.5, label='start_frame')
+            ax.axvline(x=end_frames[0], color='k', linestyle='--', linewidth=0.5, alpha=0.5, label='end_frame_i')
+            ax.axvline(x=end_frames[1], color='k', linestyle='--', linewidth=0.5, alpha=0.5, label='end_frame_f')
 
             p1, = ax.plot(x, BSpline(*tck_s)(x), '-', linewidth=0.5, alpha=0.8, label='sx={}'.format(sx))
             ax2.plot(x, sq_errors_spl, '-o', color=p1.get_color(), linewidth=0.5, ms=1, alpha=1,

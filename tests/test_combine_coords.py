@@ -9,7 +9,7 @@ import matplotlib
 import matplotlib.pyplot as plt
 
 if __name__ == '__main__':
-    BULGE_ID = '20250415_C15-15pT-0nmAu_4mmDia'
+    BULGE_ID = '20250105_C5-30pT_15nmAu_4mmDia'
 
     ROOT_DIR = '/Users/mackenzie/Library/CloudStorage/Box-Box/2024/Bulge Tests/Analyses'
     BASE_DIR = join(ROOT_DIR, BULGE_ID)
@@ -22,15 +22,15 @@ if __name__ == '__main__':
     FLIP_Z = False  # if positive pressure, True. If vacuum pressure, False.
     SKIP_FRAME_ZERO = True
 
-    BEST_PIDS = [4]
+    BEST_PIDS = [19]
     BAD_PIDS = []
-    GOOD_PIDS = [13, 4, 9, 11, 10]
+    GOOD_PIDS = [14, 15, 12, 22, 19]
     GOOD_PIDS = [x for x in GOOD_PIDS if x not in BAD_PIDS]
 
-    FRAME_RATE = 10
-    START_FRAME = 20
+    FRAME_RATE = 11.001
+    START_FRAME = 16
     TIME_START = START_FRAME / FRAME_RATE  # seconds (may vary between tests): avg(z: t < time_start)
-    TIME_EVAL = (200 / FRAME_RATE, 250 / FRAME_RATE)  # seconds (avg(dz: time_eval1 < t < time_eval2))
+    TIME_EVAL = (185 / FRAME_RATE, 205 / FRAME_RATE)  # seconds (avg(dz: time_eval1 < t < time_eval2))
     Z0 = ('auto', START_FRAME)  # if tuple, z0 (zero deflection) = avg(z: t < start_frame)
 
     # FUNCTION: COMBINE COORDS

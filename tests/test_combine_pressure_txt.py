@@ -6,7 +6,7 @@ import numpy as np
 from utils import io, plotting, processing
 
 if __name__ == '__main__':
-    BULGE_ID = '20250415_C15-15pT-0nmAu_4mmDia'
+    BULGE_ID = '20250105_C5-30pT_15nmAu_4mmDia'
 
     ROOT_DIR = '/Users/mackenzie/Library/CloudStorage/Box-Box/2024/Bulge Tests/Analyses'
     BASE_DIR = join(ROOT_DIR, BULGE_ID)
@@ -19,9 +19,9 @@ if __name__ == '__main__':
     PRESSURE_CORRECTION_FUNCTION = -1
 
     # extrapolate
-    EXTRAPOLATE_TIDS = [4, 5]  # if None, then do not extrapolate
-    FIT_DTS = [(14, 20), (10, 13.75) ]  # (t_min, t_max): time points corresponding to pressure range to fit to
-    EXTRAPOLATE_TOS = [510*2, 510*3]  # pressure (Pa) to linearly extrapolate fitted line to
+    EXTRAPOLATE_TIDS = None  # [4, 5]  # if None, then do not extrapolate
+    FIT_DTS = [(16, 24)]  # (t_min, t_max): time points corresponding to pressure range to fit to
+    EXTRAPOLATE_TOS = [453*2]  # pressure (Pa) to linearly extrapolate fitted line to
 
     for pth in [SAVE_DIR, SAVE_FIG]:
         if not os.path.exists(pth):
